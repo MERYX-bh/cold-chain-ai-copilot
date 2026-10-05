@@ -149,7 +149,6 @@ cd frontend
 npm test
 ```
 
-134 automated tests (86 in Python, 48 in the frontend). They use a fake LLM and fake services, so they need no key and no database. They cover the approval flow, the tools, the API, the audit rules, the interface behaviour and the consistency between the code and the SQL scripts. GitHub Actions runs three jobs on every push: the Python tests, the frontend tests and build, and the Docker build.
 
 ## Project structure
 
