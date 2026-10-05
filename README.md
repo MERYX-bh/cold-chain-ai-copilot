@@ -2,15 +2,6 @@
 
 An AI dispatch agent for cold-chain logistics. It investigates temperature breaches and route disruptions by reading fleet telemetry, checking live corridor weather and searching your standard operating procedures (SOPs). When it wants to **act**, it stops and asks a human first.
 
-<p align="center">
-  <video src="docs/media/supply-chain-journey.mp4" poster="docs/media/supply-chain-journey-poster.jpg" controls muted loop width="100%"></video>
-</p>
-
-<p align="center">
-  <em>The "Supply chain journey" page: a refrigerated truck leaves the packing house and must stay between 0 and 4 °C all the way to the store. This is an illustration, not live data.</em><br>
-  <a href="docs/media/supply-chain-journey.mp4">Open the video</a> if the player does not load.
-</p>
-
 ## What it does
 
 - **An agent that decides what to check.** Ask a question in plain language. The agent chooses which tools to call, in which order, and writes an operational report with the SOP clause it relied on.
@@ -176,13 +167,5 @@ frontend/            React app (journey, console, audit)
 scripts/             Database setup, dataset loading, SOP ingestion
 data/                Dataset and the SOP documents
 tests/               Python tests
-docs/                Diagrams and media
+docs/                Diagrams
 ```
-
-## Limitations and next steps
-
-- The journey animation is an illustration. It is not connected to live telemetry.
-- The quality of a real LLM's answers is not measured by automated checks yet. An evaluation set that scores which tool the agent picks is the next step.
-- Planned: expose the read tools through an MCP server, and replace the `SELECT` prefix check with a proper SQL parser.
-
-
