@@ -1,0 +1,9 @@
+-r requirements-dev.txt
+langgraph==1.2.11
+langgraph-checkpoint==4.2.0
+langchain-openai==1.6.0
+openai==3.3.1
+pandas==3.0.5
+python-dotenv==1.2.3
+SQLAlchemy==2.0.52
+streamlit==1.62.0
