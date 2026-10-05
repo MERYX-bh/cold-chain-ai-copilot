@@ -1,0 +1,60 @@
+name: cold-chain-ai-copilot
+
+x-app: &app
+  build: .
+  image: cold-chain-ai-copilot:latest
+  env_file: .env
+  environment:
+    SQL_SERVER_HOST: db
+    SQL_SERVER_PORT: "1433"
+    COLDCHAIN_DEMO: ${COLDCHAIN_DEMO:-0}
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SQL_ADMIN_PASSWORD:?Set SQL_ADMIN_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${DB_HOST_PORT:-1433}:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\" -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  db-init:
+    <<: *app
+    command: ["python", "scripts/init_database.py"]
+    volumes:
+      - ./data:/app/data:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  app:
+    <<: *app
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    volumes:
+      - hf_cache:/home/app/.cache/huggingface
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  sop-ingest:
+    <<: *app
+    profiles: ["ingest"]
+    command: ["python", "scripts/ingest_sop_pinecone.py"]
+    volumes:
+      - ./data:/app/data
+      - hf_cache:/home/app/.cache/huggingface
+
+volumes:
+  mssql_data:
+  hf_cache:
